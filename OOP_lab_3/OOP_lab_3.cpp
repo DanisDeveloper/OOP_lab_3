@@ -3,27 +3,7 @@
 
 class Calendar {
 private:
-	class Month {
-	public:
-		int number;
-		int number_of_days;
-		Month(int number, int number_of_days = 30) {
-			this->number = number;
-			this->number_of_days = number_of_days;
-		}
-	};
-	Month month_array[12] = { Month(0,31),
-					  Month(1,28),
-					  Month(2,31),
-					  Month(3,30),
-					  Month(4,31),
-					  Month(5,30),
-					  Month(6,31),
-					  Month(7,31),
-					  Month(8,30),
-					  Month(9,31),
-					  Month(10,30),
-					  Month(11,31) };
+	int month_array[12] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
 	int day;
 	int month;
 	int year;
@@ -78,13 +58,13 @@ public:
 		Calendar temp = (*this);
 		while (days > 0) {
 			if (temp.year % 4 == 0) {
-				temp.month_array[1].number_of_days = 29;
+				temp.month_array[1] = 29;
 				if (temp.year % 100 == 0 && temp.year % 400 != 0) {
-					temp.month_array[1].number_of_days = 28;
+					temp.month_array[1] = 28;
 				}
 			}
 			else {
-				temp.month_array[1].number_of_days = 28;
+				temp.month_array[1] = 28;
 			}
 			int temp_days = days;
 			days -= temp.day;
@@ -97,7 +77,7 @@ public:
 				else {
 					temp.month--;
 				}
-				temp.day = temp.month_array[temp.month - 1].number_of_days;
+				temp.day = temp.month_array[temp.month - 1];
 			}
 
 		}
@@ -107,18 +87,18 @@ public:
 		Calendar temp = (*this);
 		while (days > 0) {
 			if (temp.year % 4 == 0) {
-				temp.month_array[1].number_of_days = 29;
+				temp.month_array[1] = 29;
 				if (temp.year % 100 == 0 && temp.year % 400 != 0) {
-					temp.month_array[1].number_of_days = 28;
+					temp.month_array[1] = 28;
 				}
 			}
 			else {
-				temp.month_array[1].number_of_days = 28;
+				temp.month_array[1] = 28;
 			}
 			int temp_days = days;
-			days -= temp.month_array[temp.month - 1].number_of_days - temp.day;
+			days -= temp.month_array[temp.month - 1] - temp.day;
 			temp.day += temp_days;
-			if (temp.day > temp.month_array[temp.month - 1].number_of_days) {
+			if (temp.day > temp.month_array[temp.month - 1]) {
 				if (temp.month == 12) {
 					temp.month = 1;
 					temp.year++;
@@ -137,18 +117,19 @@ public:
 			std::swap(temp, calendar1);
 
 		int days = 0;
-		if (temp.month != calendar1.month) days += calendar1.month_array[calendar1.month - 1].number_of_days - calendar1.day;
+		if (temp.month != calendar1.month) days += calendar1.month_array[calendar1.month - 1] - calendar1.day;
 		else days += abs(temp.day - calendar1.day);
 		while (temp.month != calendar1.month) {
 			days += temp.day;
 			if (temp.month == 1) {
 				temp.month = 12;
+				temp.year--;
 			}
 			else {
 				temp.month--;
 			}
 
-			temp.day = temp.month_array[temp.month - 1].number_of_days;
+			temp.day = temp.month_array[temp.month - 1];
 		}
 		for (int i = temp.year; i != calendar1.year; i--)
 		{
@@ -217,17 +198,18 @@ int operator-(const Calendar& calendar2, Calendar calendar1) {
 	if (temp < calendar1)
 		std::swap(temp, calendar1);
 	int days = 0;
-	if (temp.month != calendar1.month) days += calendar1.month_array[calendar1.month - 1].number_of_days - calendar1.day;
+	if (temp.month != calendar1.month) days += calendar1.month_array[calendar1.month - 1] - calendar1.day;
 	else days += abs(temp.day - calendar1.day);
 	while (temp.month != calendar1.month) {
 		days += temp.day;
 		if (temp.month == 1) {
 			temp.month = 12;
+			temp.year--;
 		}
 		else {
 			temp.month--;
 		}
-		temp.day = temp.month_array[temp.month - 1].number_of_days;
+		temp.day = temp.month_array[temp.month - 1];
 	}
 	for (int i = temp.year; i != calendar1.year; i--)
 	{
@@ -284,15 +266,16 @@ std::ostream& operator<<(std::ostream& os, Calendar& calendar) {
 	return os << calendar.get_day() << "." << calendar.get_month() << "." << calendar.get_year();
 }
 
-void check(const Calendar& c1, const Calendar& c2) {
-	std::cout << "Difference1-2: " << (c1 - c2) << std::endl;
-	std::cout << "Difference2-1: " << (c2 - c1) << std::endl;
-	std::cout << "c1 == c1: " << std::boolalpha << (c1 == c2) << std::endl;
-	std::cout << "c1 != c1: " << std::boolalpha << (c1 != c2) << std::endl;
-	std::cout << "c1 >= c1: " << std::boolalpha << (c1 >= c2) << std::endl;
-	std::cout << "c1 <= c1: " << std::boolalpha << (c1 <= c2) << std::endl;
-	std::cout << "c1 > c1: " << std::boolalpha << (c1 > c2) << std::endl;
-	std::cout << "c1 < c1: " << std::boolalpha << (c1 < c2) << std::endl;
+void check(const Calendar& c1, const Calendar& c2,int index_c1,int index_c2) {
+	std::cout << "Difference"<<index_c1<<"-"<<index_c2<<": " << (c1 - c2) << std::endl;
+	std::cout << "Difference" << index_c2 << "-" << index_c1 << ": " << (c2 - c1) << std::endl;
+	std::cout << "c"<<index_c1<<" == c"<< index_c2 <<": " << std::boolalpha << (c1 == c2) << std::endl;
+	std::cout << "c"<<index_c1<<" != c"<< index_c2 <<": " << std::boolalpha << (c1 != c2) << std::endl;
+	std::cout << "c"<<index_c1<<" >= c"<< index_c2 <<": " << std::boolalpha << (c1 >= c2) << std::endl;
+	std::cout << "c"<<index_c1<<" <= c"<< index_c2 <<": " << std::boolalpha << (c1 <= c2) << std::endl;
+	std::cout << "c"<<index_c1<<" > c"<< index_c2 <<": " << std::boolalpha << (c1 > c2) << std::endl;
+	std::cout << "c"<<index_c1<<" < c"<< index_c2 <<": " << std::boolalpha << (c1 < c2) << std::endl;
+	std::cout << std::endl;
 }
 
 int main()
@@ -307,30 +290,24 @@ int main()
 	Calendar calendar8 = calendar1 - 380;
 	Calendar calendar9 = calendar1 - 1000;
 	std::cout << "Calendar 1: " << calendar1 << std::endl;
-	std::cout << "Difference1-1: " << (calendar1 - calendar1) << std::endl;
-	std::cout << "c1 == c1: " << std::boolalpha << (calendar1 == calendar1) << std::endl;
-	std::cout << "c1 != c1: " << std::boolalpha << (calendar1 != calendar1) << std::endl;
-	std::cout << "c1 >= c1: " << std::boolalpha << (calendar1 >= calendar1) << std::endl;
-	std::cout << "c1 <= c1: " << std::boolalpha << (calendar1 <= calendar1) << std::endl;
-	std::cout << "c1 > c1: " << std::boolalpha << (calendar1 > calendar1) << std::endl;
-	std::cout << "c1 < c1: " << std::boolalpha << (calendar1 < calendar1) << std::endl;
+	check(calendar1, calendar1, 1, 1);
 	std::cout << "Calendar 2: " << calendar2 << std::endl;
-	std::cout << "Difference1-2: " << (calendar1 - calendar2) << std::endl;
-	std::cout << "Difference2-1: " << (calendar2 - calendar1) << std::endl;
-	std::cout << "c1 == c2: " << std::boolalpha << (calendar1 == calendar2) << std::endl;
-	std::cout << "c1 != c2: " << std::boolalpha << (calendar1 != calendar2) << std::endl;
-	std::cout << "c1 >= c2: " << std::boolalpha << (calendar1 >= calendar2) << std::endl;
-	std::cout << "c1 <= c2: " << std::boolalpha << (calendar1 <= calendar2) << std::endl;
-	std::cout << "c1 > c2: " << std::boolalpha << (calendar1 > calendar2) << std::endl;
-	std::cout << "c1 < c2: " << std::boolalpha << (calendar1 < calendar2) << std::endl;
+	check(calendar1, calendar2, 1, 2);
 	std::cout << "Calendar 3: " << calendar3 << std::endl;
+	check(calendar1, calendar3, 1, 3);
 	std::cout << "Calendar 4: " << calendar4 << std::endl;
+	check(calendar1, calendar4, 1, 4);
 	std::cout << "Calendar 5: " << calendar5 << std::endl;
+	check(calendar1, calendar5, 1, 5);
 	std::cout << "Calendar 6: " << calendar6 << std::endl;
+	check(calendar1, calendar6, 1, 6);
 	std::cout << "Calendar 7: " << calendar7 << std::endl;
+	check(calendar1, calendar7, 1, 7);
 	std::cout << "Calendar 8: " << calendar8 << std::endl;
+	check(calendar1, calendar8, 1, 8);
 	std::cout << "Calendar 9: " << calendar9 << std::endl;
+	check(calendar1, calendar9, 1, 9);
 
-	std::cout << "Difference5-9: " << (calendar5 - calendar9) << std::endl;
+	std::cout << "Difference1-9: " << (calendar5 - calendar9) << std::endl;
 }	
 
